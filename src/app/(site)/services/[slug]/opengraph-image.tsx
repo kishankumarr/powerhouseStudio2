@@ -1,24 +1,15 @@
-import { getContent, getService, serviceSlugs } from '@/content'
+import { getContent, serviceSlugs } from '@/content'
 import { OG_CONTENT_TYPE, OG_SIZE, renderOg } from '@/lib/og/render-og'
 import { fill, pad2 } from '@/lib/utils'
 
+// One static alt: generateImageMetadata can't pass [slug] through a static export.
+export const alt = getContent().seo.services.ogAlt
 export const size = OG_SIZE
 export const contentType = OG_CONTENT_TYPE
+export const dynamic = 'force-static'
 
 export function generateStaticParams() {
   return serviceSlugs().map((slug) => ({ slug }))
-}
-
-export async function generateImageMetadata({ params }: { params: { slug: string } }) {
-  const service = getService(params.slug)
-  return [
-    {
-      id: 'og',
-      alt: service?.seo.ogAlt ?? getContent().seo.services.ogAlt,
-      size: OG_SIZE,
-      contentType: OG_CONTENT_TYPE,
-    },
-  ]
 }
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {

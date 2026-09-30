@@ -2,6 +2,8 @@ import type { MetadataRoute } from 'next'
 import { ROUTES, servicePath } from '@/config/routes'
 import { getContent, serviceSlugs } from '@/content'
 
+export const dynamic = 'force-static'
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const { site } = getContent()
   // A content constant, not new Date(): the sitemap shouldn't churn on every build.
