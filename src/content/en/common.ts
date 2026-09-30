@@ -1,0 +1,52 @@
+import type { Content } from '../types'
+
+export const common = {
+  skipLink: 'Skip to content',
+  navLabel: 'Main',
+  footerNavLabel: 'Footer',
+  homeLabel: 'Powerhouse Studios home',
+  logoLabel: 'Powerhouse Studios',
+  nav: [
+    { label: 'About', href: '/about' },
+    { label: 'Services', href: '/services' },
+    { label: 'Work', href: '/work' },
+    { label: 'Approach', href: '/approach' },
+    { label: 'FAQ', href: '/faq' },
+  ],
+  primaryCta: { label: 'Start a project', href: '/contact' },
+  secondaryCta: { label: 'Explore services', href: '/services' },
+  menuOpen: 'Open menu',
+  menuClose: 'Close menu',
+  menuTitle: 'Menu',
+  external: '(opens in a new tab)',
+  backToTop: 'Back to top',
+  readMore: 'Read more',
+  viewService: 'View service',
+  allServices: 'All services',
+  breadcrumbLabel: 'Breadcrumb',
+  breadcrumbHome: 'Home',
+  footer: {
+    blurb:
+      'A creative and production company in Mangaluru, Karnataka. Creative thinking, production expertise and execution under one roof.',
+    exploreTitle: 'Explore',
+    servicesTitle: 'Services',
+    contactTitle: 'Contact',
+    rights: '© {year} Powerhouse Studios. All rights reserved.',
+    creditsTitle: 'Photography credits',
+    creditsNote:
+      'Photographs on this site are illustrative stock images from Unsplash, not Powerhouse projects.',
+    creditLine: '{name} on Unsplash',
+    location: 'Mangaluru, Karnataka',
+    phoneLabel: 'Phone',
+    emailLabel: 'Email',
+    instagramLabel: 'Instagram',
+    signoff: "Let's create something powerful.",
+  },
+  hud: {
+    rec: 'Rec',
+    scene: 'Scene 01',
+    take: 'Take 01',
+    location: 'Mangaluru · KA',
+    live: 'On air',
+  },
+} satisfies Content['common']

@@ -1,0 +1,117 @@
+/*
+ * Style axis: shape, type and motion.
+ * Saira is one variable family; each style picks a width on its `wdth` axis.
+ * Width-matched fallback faces keep headlines from reflowing when Saira swaps in.
+ * size-adjust was calibrated by rendering a sample line in Saira and in each fallback
+ * (Chrome, Arial) and matching widths; Roboto values are scaled by the same ratio.
+ */
+
+@font-face {
+  font-family: 'PH Fallback Sharp';
+  src: local('Arial');
+  size-adjust: 73.9%;
+  ascent-override: 128%;
+  descent-override: 36%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'PH Fallback Sharp Android';
+  src: local('Roboto');
+  size-adjust: 74.8%;
+  ascent-override: 128%;
+  descent-override: 36%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'PH Fallback Rounded';
+  src: local('Arial');
+  size-adjust: 99.2%;
+  ascent-override: 104%;
+  descent-override: 29%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'PH Fallback Rounded Android';
+  src: local('Roboto');
+  size-adjust: 101.1%;
+  ascent-override: 104%;
+  descent-override: 29%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'PH Fallback Condensed';
+  src: local('Arial Narrow'), local('Arial');
+  size-adjust: 70.6%;
+  ascent-override: 150%;
+  descent-override: 42%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'PH Fallback Condensed Android';
+  src: local('Roboto Condensed'), local('Roboto');
+  size-adjust: 70.6%;
+  ascent-override: 150%;
+  descent-override: 42%;
+  line-gap-override: 0%;
+}
+
+[data-style='sharp'] {
+  --ph-font-display:
+    var(--font-saira), 'PH Fallback Sharp', 'PH Fallback Sharp Android', ui-sans-serif, sans-serif;
+  --ph-display-stretch: 75%;
+  --ph-display-weight: 700;
+  --ph-display-case: uppercase;
+  --ph-tracking-display: -0.004em;
+  --ph-leading-display: 0.9;
+  --ph-display-scale: 1;
+  /* Width of 'POWERHOUSE' (uppercase, no tracking) in em, measured in Saira at this width */
+  --ph-wordmark-em: 5.06;
+  --ph-radius-sm: 0px;
+  --ph-radius-md: 2px;
+  --ph-radius-lg: 4px;
+  --ph-radius-pill: 2px;
+  --ph-border-width: 1px;
+  --ph-motion-scale: 1;
+  /* 52° cut corners, echoing the logo's ribbon terminals */
+  --ph-cut: 12px;
+}
+
+[data-style='rounded'] {
+  --ph-font-display:
+    var(--font-saira), 'PH Fallback Rounded', 'PH Fallback Rounded Android', ui-sans-serif,
+    sans-serif;
+  --ph-display-stretch: 100%;
+  --ph-display-weight: 620;
+  --ph-display-case: none;
+  --ph-tracking-display: -0.03em;
+  --ph-leading-display: 0.96;
+  --ph-display-scale: 0.84;
+  --ph-wordmark-em: 6.97;
+  --ph-radius-sm: 10px;
+  --ph-radius-md: 18px;
+  --ph-radius-lg: 28px;
+  --ph-radius-pill: 999px;
+  --ph-border-width: 1px;
+  --ph-motion-scale: 0.85;
+  --ph-cut: 0px;
+}
+
+[data-style='condensed'] {
+  --ph-font-display:
+    var(--font-saira), 'PH Fallback Condensed', 'PH Fallback Condensed Android', ui-sans-serif,
+    sans-serif;
+  --ph-display-stretch: 56%;
+  --ph-display-weight: 800;
+  --ph-display-case: uppercase;
+  --ph-tracking-display: 0.004em;
+  --ph-leading-display: 0.84;
+  --ph-display-scale: 1.2;
+  --ph-wordmark-em: 3.9;
+  --ph-radius-sm: 2px;
+  --ph-radius-md: 4px;
+  --ph-radius-lg: 8px;
+  --ph-radius-pill: 6px;
+  --ph-border-width: 2px;
+  --ph-motion-scale: 1.15;
+  --ph-cut: 0px;
+}

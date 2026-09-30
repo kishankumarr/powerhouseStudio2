@@ -1,0 +1,76 @@
+/* Daylight Edit: paper surfaces, black ink, yellow only ever as a fill (highlighter, tape). */
+
+[data-theme='daylight'] {
+  color-scheme: light;
+  --ph-bg: #fafaf7;
+  --ph-surface: #ffffff;
+  --ph-surface-2: #f1f0ea;
+  --ph-fg: #0a0a0a;
+  --ph-fg-muted: #55544e;
+  --ph-accent: var(--ph-yellow);
+  --ph-accent-fg: var(--ph-black);
+  /* Yellow on white is 1.2:1, so accent used as text falls back to ink. */
+  --ph-accent-ink: #0a0a0a;
+  --ph-border: #e3e2da;
+  --ph-border-strong: #7e7d76;
+  --ph-ring: #0a0a0a;
+  --ph-overlay: rgb(10 10 10 / 0.42);
+  --ph-glow: transparent;
+  --ph-grain-opacity: 0.035;
+  --ph-pattern: grid;
+  --ph-img-filter: contrast(1.03) saturate(0.92);
+  --ph-img-filter-hover: contrast(1.05) saturate(1.05);
+  --ph-logo-ink: #000000;
+  --ph-logo-pill: #000000;
+  --ph-logo-pill-edge: #000000;
+  --ph-logo-word: var(--ph-yellow);
+  --ph-logo-inset: #ffffff;
+  --ph-logo-inset-ink: var(--ph-black);
+}
+
+/* Black band for emphasis */
+[data-theme='daylight'] [data-tone='contrast'] {
+  color-scheme: dark;
+  --ph-bg: #0a0a0a;
+  --ph-surface: #151514;
+  --ph-surface-2: #1e1e1c;
+  --ph-fg: #fafaf7;
+  --ph-fg-muted: #a8a69c;
+  --ph-accent: var(--ph-yellow);
+  --ph-accent-fg: var(--ph-black);
+  --ph-accent-ink: var(--ph-yellow);
+  --ph-border: #2a2a28;
+  --ph-border-strong: #6e6d66;
+  --ph-ring: var(--ph-yellow);
+  --ph-overlay: rgb(0 0 0 / 0.55);
+  --ph-img-filter: grayscale(1) contrast(1.1) brightness(0.85);
+  --ph-img-filter-hover: grayscale(0) brightness(0.95);
+  --ph-logo-ink: #fafaf7;
+  --ph-logo-pill: #141413;
+  --ph-logo-pill-edge: #34332f;
+  --ph-logo-inset: #fafaf7;
+}
+
+/* Highlighter-yellow band */
+[data-theme='daylight'] [data-tone='accent'],
+[data-theme='daylight'][data-layout='blocks'] .tone-accent-in-blocks {
+  color-scheme: light;
+  --ph-bg: var(--ph-yellow);
+  --ph-surface: #fff59e;
+  --ph-surface-2: #f3e200;
+  --ph-fg: #000000;
+  --ph-fg-muted: #3d3800;
+  --ph-accent: #000000;
+  --ph-accent-fg: var(--ph-yellow);
+  --ph-accent-ink: #000000;
+  --ph-border: #d9c900;
+  --ph-border-strong: #000000;
+  --ph-ring: #000000;
+  --ph-overlay: rgb(0 0 0 / 0.5);
+  --ph-img-filter: grayscale(1) contrast(1.2);
+  --ph-img-filter-hover: grayscale(1) contrast(1.1);
+  --ph-logo-ink: #000000;
+  --ph-logo-pill: #000000;
+  --ph-logo-pill-edge: #000000;
+  --ph-logo-inset: #ffffff;
+}

@@ -1,0 +1,72 @@
+{
+  "name": "powerhouse-studios",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Powerhouse Studios, a creative and production company in Mangaluru, Karnataka.",
+  "engines": {
+    "node": ">=20.9"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:a11y": "playwright test e2e/a11y.spec.ts",
+    "test:all": "npm run lint && npm run typecheck && npm run test && npm run test:e2e",
+    "analyze": "next experimental-analyze",
+    "logo": "node scripts/vectorize-logo.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "check:images": "node scripts/check-images.mjs",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "2.13.0",
+    "clsx": "2.1.1",
+    "lucide-react": "1.49.0",
+    "motion": "13.4.6",
+    "next": "16.3.7",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-redux": "9.3.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/postcss": "4.3.3",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "22.20.4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "6.1.1",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.7",
+    "husky": "9.1.7",
+    "jsdom": "30.1.1",
+    "lint-staged": "17.6.0",
+    "potrace": "2.1.8",
+    "prettier": "3.9.9",
+    "prettier-plugin-tailwindcss": "0.8.1",
+    "schema-dts": "2.0.0",
+    "sharp": "0.35.5",
+    "svgo": "4.1.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vitest": "5.0.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mjs,js}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{css,json,md}": [
+      "prettier --write"
+    ]
+  }
+}

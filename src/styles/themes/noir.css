@@ -1,0 +1,77 @@
+/* Studio Noir: black stage, yellow as the light source, film grain. */
+
+[data-theme='noir'] {
+  color-scheme: dark;
+  --ph-bg: #000000;
+  --ph-surface: #0d0d0c;
+  --ph-surface-2: #171715;
+  --ph-fg: #f5f4ee;
+  --ph-fg-muted: #a8a69c;
+  --ph-accent: var(--ph-yellow);
+  --ph-accent-fg: var(--ph-black);
+  --ph-accent-ink: var(--ph-yellow);
+  --ph-border: #262624;
+  --ph-border-strong: #6b6a64;
+  --ph-ring: var(--ph-yellow);
+  --ph-overlay: rgb(0 0 0 / 0.62);
+  --ph-glow: rgb(254 237 1 / 0.15);
+  --ph-grain-opacity: 0.075;
+  --ph-pattern: none;
+  --ph-img-filter: grayscale(1) contrast(1.12) brightness(0.78);
+  --ph-img-filter-hover: grayscale(0) contrast(1.04) brightness(0.92);
+  --ph-logo-ink: var(--ph-fg);
+  --ph-logo-pill: #141413;
+  --ph-logo-pill-edge: #34332f;
+  --ph-logo-word: var(--ph-yellow);
+  --ph-logo-inset: #f5f4ee;
+  --ph-logo-inset-ink: var(--ph-black);
+}
+
+/* Paper band inside the noir stage */
+[data-theme='noir'] [data-tone='contrast'] {
+  color-scheme: light;
+  --ph-bg: #f5f4ee;
+  --ph-surface: #ffffff;
+  --ph-surface-2: #e9e8e0;
+  --ph-fg: #0a0a0a;
+  --ph-fg-muted: #55544e;
+  --ph-accent: var(--ph-yellow);
+  --ph-accent-fg: var(--ph-black);
+  --ph-accent-ink: #0a0a0a;
+  --ph-border: #d9d8cf;
+  --ph-border-strong: #7e7d76;
+  --ph-ring: #0a0a0a;
+  --ph-overlay: rgb(10 10 10 / 0.45);
+  --ph-glow: transparent;
+  --ph-img-filter: grayscale(1) contrast(1.08);
+  --ph-img-filter-hover: grayscale(0);
+  --ph-logo-ink: #000000;
+  --ph-logo-pill: #000000;
+  --ph-logo-pill-edge: #000000;
+  --ph-logo-inset: #ffffff;
+}
+
+/* Key-light yellow band */
+[data-theme='noir'] [data-tone='accent'],
+[data-theme='noir'][data-layout='blocks'] .tone-accent-in-blocks {
+  color-scheme: light;
+  --ph-bg: var(--ph-yellow);
+  --ph-surface: #fff59e;
+  --ph-surface-2: #f3e200;
+  --ph-fg: #000000;
+  --ph-fg-muted: #3d3800;
+  --ph-accent: #000000;
+  --ph-accent-fg: var(--ph-yellow);
+  --ph-accent-ink: #000000;
+  --ph-border: #d9c900;
+  --ph-border-strong: #000000;
+  --ph-ring: #000000;
+  --ph-overlay: rgb(0 0 0 / 0.5);
+  --ph-glow: transparent;
+  --ph-img-filter: grayscale(1) contrast(1.2);
+  --ph-img-filter-hover: grayscale(1) contrast(1.1);
+  --ph-logo-ink: #000000;
+  --ph-logo-pill: #000000;
+  --ph-logo-pill-edge: #000000;
+  --ph-logo-inset: #ffffff;
+}

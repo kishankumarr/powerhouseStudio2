@@ -1,0 +1,28 @@
+/*
+ * Layout axis: composition and density. Structural differences are expressed
+ * with the layout-* variants inside components; this file holds the shared rhythm.
+ */
+
+[data-layout='cinematic'] {
+  --ph-container: 92rem;
+  --ph-gutter: clamp(1rem, 4vw, 3.5rem);
+  --ph-section-py: clamp(5rem, 11vw, 10rem);
+  --ph-section-gap: 0px;
+  --ph-band-rule: 0px;
+}
+
+[data-layout='editorial'] {
+  --ph-container: 80rem;
+  --ph-gutter: clamp(1rem, 5vw, 4rem);
+  --ph-section-py: clamp(4.5rem, 10vw, 8.5rem);
+  --ph-section-gap: 0px;
+  --ph-band-rule: 1px;
+}
+
+[data-layout='blocks'] {
+  --ph-container: 96rem;
+  --ph-gutter: clamp(1rem, 3vw, 2.5rem);
+  --ph-section-py: clamp(3.5rem, 8vw, 6.5rem);
+  --ph-section-gap: 0px;
+  --ph-band-rule: var(--ph-border-width);
+}
