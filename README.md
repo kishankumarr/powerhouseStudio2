@@ -25,6 +25,15 @@ Node 20.9 or newer is required.
 
 A pre-commit hook runs Prettier and ESLint on staged files.
 
+## CI/CD (GitLab)
+
+`.gitlab-ci.yml` runs these checks on every merge request and push, and builds the app. It then runs Playwright against that build (reports appear in the MR test widget) and deploys to Vercel: a preview for each merge request and production from the default branch.
+
+Deploys only run once these CI/CD variables are set:
+
+- `VERCEL_TOKEN` (masked)
+- `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` (from `.vercel/project.json` after `npx vercel link`)
+
 ## The two looks
 
 The client can switch looks from the round button in the bottom-right corner of every page, or on `/config`, which is not indexed.

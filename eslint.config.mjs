@@ -49,5 +49,7 @@ export default defineConfig([
     'brand_assets/**',
     'playwright-report/**',
     'test-results/**',
+    'reports/**',
+    '.npm/**',
   ]),
 ])

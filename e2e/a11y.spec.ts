@@ -1,21 +1,37 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
-import { allPaths, presets, scrollThrough } from './helpers'
+import { allPaths, presets, scrollThrough, skipDockHint } from './helpers'
+
+const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
 
 for (const preset of presets) {
   for (const path of allPaths) {
     test(`${path} [${preset}] has no serious or critical axe violations`, async ({ page }) => {
+      // The timed first-visit hint gets its own test below, once fully shown.
+      await skipDockHint(page)
       await page.goto(`${path}?preset=${preset}`, { waitUntil: 'networkidle' })
       await scrollThrough(page)
-      const results = await new AxeBuilder({ page })
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
-        .analyze()
+      const results = await new AxeBuilder({ page }).withTags(TAGS).analyze()
       const serious = results.violations
         .filter((v) => v.impact === 'serious' || v.impact === 'critical')
         .map((v) => ({ id: v.id, nodes: v.nodes.slice(0, 3).map((n) => n.target.join(' ')) }))
       expect(serious).toEqual([])
     })
   }
+
+  test(`the first-visit look hint [${preset}] is legible once shown`, async ({ page }) => {
+    await page.goto(`/?preset=${preset}`)
+    const hint = page.locator('p[data-show="true"]')
+    await expect(hint).toBeVisible({ timeout: 5000 })
+    await expect(hint).toHaveCSS('opacity', '1')
+    const results = await new AxeBuilder({ page })
+      .include('p[data-show="true"]')
+      .withTags(TAGS)
+      .analyze()
+    expect(
+      results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical'),
+    ).toEqual([])
+  })
 }
 
 test('the skip link is the first tab stop and moves focus to main', async ({ page }) => {

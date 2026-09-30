@@ -1,4 +1,4 @@
-import { Stagger, StaggerItem } from '@/components/motion/stagger'
+import { Reveal } from '@/components/motion/reveal'
 import { CtaBand } from '@/components/patterns/cta-band'
 import { PageHero } from '@/components/patterns/page-hero'
 import { SectionHeader } from '@/components/patterns/section-header'
@@ -27,32 +27,30 @@ export default function WorkPage() {
             eyebrow={work.industries.eyebrow}
             title={work.industries.title}
           />
-          <Stagger
-            as="ul"
-            className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border-ph border-border bg-border sm:grid-cols-3 lg:grid-cols-4"
-          >
-            {work.industries.items.map((it, i) => (
-              <StaggerItem
-                as="li"
-                key={it}
-                className="group/ind relative flex min-h-36 flex-col justify-between gap-6 overflow-hidden bg-bg p-5 sm:min-h-44 sm:p-7"
-              >
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-0 origin-bottom scale-y-0 bg-accent transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/ind:scale-y-100"
-                />
-                <span
-                  aria-hidden="true"
-                  className="relative label-type text-fg-muted tabular group-hover/ind:text-accent-fg"
+          <Reveal>
+            <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border-ph border-border bg-border sm:grid-cols-3 lg:grid-cols-4">
+              {work.industries.items.map((it, i) => (
+                <li
+                  key={it}
+                  className="group/ind relative flex min-h-36 flex-col justify-between gap-6 overflow-hidden bg-bg p-5 sm:min-h-44 sm:p-7"
                 >
-                  {pad2(i + 1)}
-                </span>
-                <span className="relative display-type text-display-sm text-fg group-hover/ind:text-accent-fg">
-                  {it}
-                </span>
-              </StaggerItem>
-            ))}
-          </Stagger>
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 origin-bottom scale-y-0 bg-accent transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/ind:scale-y-100"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="relative label-type text-fg-muted tabular group-hover/ind:text-accent-fg"
+                  >
+                    {pad2(i + 1)}
+                  </span>
+                  <span className="relative display-type text-display-sm text-fg group-hover/ind:text-accent-fg">
+                    {it}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         </div>
       </Section>
 

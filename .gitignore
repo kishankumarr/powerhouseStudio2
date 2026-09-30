@@ -29,3 +29,7 @@ npm-debug.log*
 
 # vercel
 .vercel
+
+# CI
+/.npm/
+/reports/

@@ -4,7 +4,7 @@ import { AnimatePresence, useReducedMotion } from 'motion/react'
 import * as m from 'motion/react-m'
 import NextLink from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react'
 import type { Link } from '@/content/types'
 import { useMotionScale } from '@/hooks/use-motion-scale'
 import { ease } from '@/lib/motion/tokens'
@@ -47,7 +47,8 @@ export function MobileNav({ logo, items, cta, labels, contact }: MobileNavProps)
     }
   }, [pathname, dispatch])
 
-  useEffect(() => {
+  // Layout effect: scroll lock, focus and the key handler are in place before the menu paints.
+  useLayoutEffect(() => {
     if (!open) return
     const root = document.documentElement
     const prev = root.style.overflow

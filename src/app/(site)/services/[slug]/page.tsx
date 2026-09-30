@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import NextLink from 'next/link'
 import { notFound } from 'next/navigation'
 import { SERVICE_ICONS } from '@/components/icons/service-icons'
-import { Stagger, StaggerItem } from '@/components/motion/stagger'
+import { Reveal } from '@/components/motion/reveal'
 import { Timecode } from '@/components/motion/timecode'
 import { Accordion } from '@/components/patterns/accordion'
 import { Breadcrumbs } from '@/components/patterns/breadcrumbs'
@@ -125,28 +125,26 @@ export default async function ServicePage({ params }: PageProps<'/services/[slug
               </h2>
             </div>
           </div>
-          <Stagger
-            as="ol"
-            className="grid gap-px overflow-hidden rounded-lg border-ph border-border bg-border sm:grid-cols-2 lg:grid-cols-3"
-          >
-            {service.capabilities.map((c, i) => (
-              <StaggerItem
-                as="li"
-                key={c}
-                className="group/cap flex min-h-24 items-center gap-5 bg-bg px-6 py-5 transition-colors duration-300 hover:bg-accent"
-              >
-                <span
-                  aria-hidden="true"
-                  className="label-type text-fg-muted tabular group-hover/cap:text-accent-fg"
+          <Reveal>
+            <ol className="grid gap-px overflow-hidden rounded-lg border-ph border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+              {service.capabilities.map((c, i) => (
+                <li
+                  key={c}
+                  className="group/cap flex min-h-24 items-center gap-5 bg-bg px-6 py-5 transition-colors duration-300 hover:bg-accent"
                 >
-                  {pad2(i + 1)}
-                </span>
-                <span className="text-lg font-semibold text-fg group-hover/cap:text-accent-fg">
-                  {c}
-                </span>
-              </StaggerItem>
-            ))}
-          </Stagger>
+                  <span
+                    aria-hidden="true"
+                    className="label-type text-fg-muted tabular group-hover/cap:text-accent-fg"
+                  >
+                    {pad2(i + 1)}
+                  </span>
+                  <span className="text-lg font-semibold text-fg group-hover/cap:text-accent-fg">
+                    {c}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
         </div>
       </Section>
 

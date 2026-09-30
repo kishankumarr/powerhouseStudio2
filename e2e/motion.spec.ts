@@ -2,6 +2,9 @@ import { expect, test } from '@playwright/test'
 import { scrollThrough } from './helpers'
 
 // Runs in the `reduced-motion` project (prefers-reduced-motion: reduce).
+// Scrolling the longest pages can exceed the default budget on a busy runner.
+test.describe.configure({ timeout: 120_000 })
+
 for (const path of ['/', '/about', '/services/photography', '/approach']) {
   test(`${path}: nothing loops and all content ends up visible`, async ({ page }) => {
     await page.goto(path, { waitUntil: 'networkidle' })

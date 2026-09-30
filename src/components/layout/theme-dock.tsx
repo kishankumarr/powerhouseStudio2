@@ -1,10 +1,8 @@
 'use client'
 
-import { AnimatePresence } from 'motion/react'
-import * as m from 'motion/react-m'
 import { Check, RotateCcw, SlidersHorizontal, X } from 'lucide-react'
 import NextLink from 'next/link'
-import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { AxisRadioGroup } from '@/components/config/axis-radio-group'
 import {
   LAYOUT_IDS,
@@ -16,8 +14,6 @@ import {
 } from '@/config/themes'
 import { DOCK_NUDGE_KEY } from '@/constants/storage-keys'
 import type { Content } from '@/content/types'
-import { useMotionScale } from '@/hooks/use-motion-scale'
-import { ease } from '@/lib/motion/tokens'
 import { cn } from '@/lib/utils'
 import { centerOf, withThemeTransition } from '@/lib/view-transition'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
@@ -45,9 +41,11 @@ export function ThemeDock({ copy }: ThemeDockProps) {
   const theme = useAppSelector(selectTheme)
   const layout = useAppSelector(selectLayout)
   const style = useAppSelector(selectStyle)
-  const scale = useMotionScale()
   const [fineTune, setFineTune] = useState(false)
   const [nudge, setNudge] = useState(false)
+  // Mounted on first open and kept: its checked state is client-only (no SSR mismatch),
+  // and staying mounted lets CSS animate both directions.
+  const [mounted, setMounted] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const panelId = useId()
@@ -77,7 +75,8 @@ export function ThemeDock({ copy }: ThemeDockProps) {
     }
   }, [])
 
-  useEffect(() => {
+  // Layout effect: focus and the Escape handler are in place before the panel paints.
+  useLayoutEffect(() => {
     if (!open) return
     panelRef.current?.querySelector<HTMLInputElement>('input:checked, input')?.focus()
     const onKey = (e: KeyboardEvent) => {
@@ -105,143 +104,138 @@ export function ThemeDock({ copy }: ThemeDockProps) {
         menuOpen && 'pointer-events-none opacity-0',
       )}
     >
-      <AnimatePresence>
-        {open && (
-          <m.div
-            ref={panelRef}
-            id={panelId}
-            role="dialog"
-            aria-labelledby={titleId}
-            className="max-h-[min(78dvh,44rem)] w-[min(calc(100vw-2rem),24rem)] origin-bottom-right overflow-y-auto overscroll-contain rounded-lg border-ph border-border-strong bg-surface p-5 text-fg shadow-[0_30px_80px_-20px_rgb(0_0_0/0.55)]"
-            initial={{ opacity: 0, scale: 0.92, y: 16 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 12 }}
-            transition={{ duration: 0.35 * scale, ease: ease.out }}
-          >
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <div className="grid gap-1">
-                <h2 id={titleId} className="display-type text-2xl leading-none">
-                  {copy.dock.title}
-                </h2>
-                <p className="text-sm text-fg-muted">{copy.dock.subtitle}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => close()}
-                aria-label={copy.dock.close}
-                className="-mt-1 -mr-1 grid size-10 shrink-0 place-items-center rounded-pill text-fg-muted hover:bg-surface-2 hover:text-fg"
-              >
-                <X aria-hidden="true" className="size-5" />
-              </button>
+      {/* CSS-driven open/close (not AnimatePresence): the core control must work from the
+          very first frame, before the lazily loaded animation engine arrives. */}
+      {mounted && (
+        <div
+          ref={panelRef}
+          id={panelId}
+          role="dialog"
+          aria-labelledby={titleId}
+          data-state={open ? 'open' : 'closed'}
+          inert={!open}
+          className="max-h-[min(78dvh,44rem)] w-[min(calc(100vw-2rem),24rem)] origin-bottom-right overflow-y-auto overscroll-contain rounded-lg border-ph border-border-strong bg-surface p-5 text-fg shadow-[0_30px_80px_-20px_rgb(0_0_0/0.55)] transition-[opacity,scale,translate,visibility] duration-[calc(350ms*var(--ph-motion-scale))] ease-[cubic-bezier(0.22,1,0.36,1)] data-[state=closed]:invisible data-[state=closed]:translate-y-3 data-[state=closed]:scale-[0.94] data-[state=closed]:opacity-0 starting:translate-y-4 starting:scale-[0.92] starting:opacity-0"
+        >
+          <div className="mb-5 flex items-start justify-between gap-4">
+            <div className="grid gap-1">
+              <h2 id={titleId} className="display-type text-2xl leading-none">
+                {copy.dock.title}
+              </h2>
+              <p className="text-sm text-fg-muted">{copy.dock.subtitle}</p>
             </div>
+            <button
+              type="button"
+              onClick={() => close()}
+              aria-label={copy.dock.close}
+              className="-mt-1 -mr-1 grid size-10 shrink-0 place-items-center rounded-pill text-fg-muted hover:bg-surface-2 hover:text-fg"
+            >
+              <X aria-hidden="true" className="size-5" />
+            </button>
+          </div>
 
-            <fieldset className="grid gap-2.5">
-              <legend className="sr-only">{copy.dock.title}</legend>
-              {PRESET_IDS.map((id) => (
-                <PresetOption
-                  key={id}
-                  id={id}
-                  name={copy.presets[id].name}
-                  tagline={copy.presets[id].tagline}
-                  currentLabel={copy.dock.current}
-                  checked={preset === id}
-                  onSelect={(el) => run(() => dispatch(applyPreset(id)), el)}
+          <fieldset className="grid gap-2.5">
+            <legend className="sr-only">{copy.dock.title}</legend>
+            {PRESET_IDS.map((id) => (
+              <PresetOption
+                key={id}
+                id={id}
+                name={copy.presets[id].name}
+                tagline={copy.presets[id].tagline}
+                currentLabel={copy.dock.current}
+                checked={preset === id}
+                onSelect={(el) => run(() => dispatch(applyPreset(id)), el)}
+              />
+            ))}
+          </fieldset>
+
+          {preset === 'custom' && (
+            <p className="mt-3 label-type text-fg-muted">{copy.dock.custom}</p>
+          )}
+
+          <div className="mt-5 border-t border-border pt-4">
+            <button
+              type="button"
+              aria-expanded={fineTune}
+              onClick={() => setFineTune((v) => !v)}
+              className="flex min-h-11 w-full items-center justify-between gap-3 font-semibold"
+            >
+              <span className="flex items-center gap-2">
+                <SlidersHorizontal aria-hidden="true" className="size-4" />
+                {copy.dock.fineTune}
+              </span>
+              <span
+                aria-hidden="true"
+                className={cn('transition-transform', fineTune && 'rotate-45')}
+              >
+                {'+'}
+              </span>
+            </button>
+            {fineTune && (
+              <div className="mt-3 grid gap-4">
+                <AxisRadioGroup
+                  name="dock-theme"
+                  legend={copy.axes.theme.label}
+                  value={theme}
+                  options={THEME_IDS.map((id) => ({ id, ...copy.axes.theme.options[id] }))}
+                  onChange={(id, el) => run(() => dispatch(setTheme(id)), el)}
                 />
-              ))}
-            </fieldset>
-
-            {preset === 'custom' && (
-              <p className="mt-3 label-type text-fg-muted">{copy.dock.custom}</p>
+                <AxisRadioGroup
+                  name="dock-layout"
+                  legend={copy.axes.layout.label}
+                  value={layout}
+                  options={LAYOUT_IDS.map((id) => ({ id, ...copy.axes.layout.options[id] }))}
+                  onChange={(id, el) => run(() => dispatch(setLayout(id)), el)}
+                />
+                <AxisRadioGroup
+                  name="dock-style"
+                  legend={copy.axes.style.label}
+                  value={style}
+                  options={STYLE_IDS.map((id) => ({ id, ...copy.axes.style.options[id] }))}
+                  onChange={(id, el) => run(() => dispatch(setStyle(id)), el)}
+                />
+              </div>
             )}
+          </div>
 
-            <div className="mt-5 border-t border-border pt-4">
-              <button
-                type="button"
-                aria-expanded={fineTune}
-                onClick={() => setFineTune((v) => !v)}
-                className="flex min-h-11 w-full items-center justify-between gap-3 font-semibold"
-              >
-                <span className="flex items-center gap-2">
-                  <SlidersHorizontal aria-hidden="true" className="size-4" />
-                  {copy.dock.fineTune}
-                </span>
-                <span
-                  aria-hidden="true"
-                  className={cn('transition-transform', fineTune && 'rotate-45')}
-                >
-                  {'+'}
-                </span>
-              </button>
-              {fineTune && (
-                <div className="mt-3 grid gap-4">
-                  <AxisRadioGroup
-                    name="dock-theme"
-                    legend={copy.axes.theme.label}
-                    value={theme}
-                    options={THEME_IDS.map((id) => ({ id, ...copy.axes.theme.options[id] }))}
-                    onChange={(id, el) => run(() => dispatch(setTheme(id)), el)}
-                  />
-                  <AxisRadioGroup
-                    name="dock-layout"
-                    legend={copy.axes.layout.label}
-                    value={layout}
-                    options={LAYOUT_IDS.map((id) => ({ id, ...copy.axes.layout.options[id] }))}
-                    onChange={(id, el) => run(() => dispatch(setLayout(id)), el)}
-                  />
-                  <AxisRadioGroup
-                    name="dock-style"
-                    legend={copy.axes.style.label}
-                    value={style}
-                    options={STYLE_IDS.map((id) => ({ id, ...copy.axes.style.options[id] }))}
-                    onChange={(id, el) => run(() => dispatch(setStyle(id)), el)}
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4 text-sm">
-              <button
-                type="button"
-                onClick={(e) => run(() => dispatch(resetPreferences()), e.currentTarget)}
-                className="inline-flex min-h-11 items-center gap-2 text-fg-muted hover:text-fg"
-              >
-                <RotateCcw aria-hidden="true" className="size-4" />
-                {copy.dock.reset}
-              </button>
-              <NextLink
-                href="/config"
-                onClick={() => close(false)}
-                className="inline-flex min-h-11 items-center font-semibold underline decoration-2 underline-offset-4"
-              >
-                {copy.dock.openConfig}
-              </NextLink>
-            </div>
-          </m.div>
-        )}
-      </AnimatePresence>
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4 text-sm">
+            <button
+              type="button"
+              onClick={(e) => run(() => dispatch(resetPreferences()), e.currentTarget)}
+              className="inline-flex min-h-11 items-center gap-2 text-fg-muted hover:text-fg"
+            >
+              <RotateCcw aria-hidden="true" className="size-4" />
+              {copy.dock.reset}
+            </button>
+            <NextLink
+              href="/config"
+              onClick={() => close(false)}
+              className="inline-flex min-h-11 items-center font-semibold underline decoration-2 underline-offset-4"
+            >
+              {copy.dock.openConfig}
+            </NextLink>
+          </div>
+        </div>
+      )}
 
       <div className="flex items-center gap-3">
-        <AnimatePresence>
-          {nudge && !open && (
-            <m.p
-              aria-hidden="true"
-              className="rounded-pill border-ph border-border-strong bg-surface px-4 py-2.5 label-type text-fg shadow-lg"
-              initial={{ opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 8 }}
-              transition={{ duration: 0.4 * scale, ease: ease.out }}
-            >
-              {copy.dock.open}
-            </m.p>
-          )}
-        </AnimatePresence>
+        <p
+          aria-hidden="true"
+          data-show={nudge && !open}
+          className="rounded-pill border-ph border-border-strong bg-surface px-4 py-2.5 label-type text-fg shadow-lg transition-[opacity,translate,visibility] duration-[calc(400ms*var(--ph-motion-scale))] ease-[cubic-bezier(0.22,1,0.36,1)] data-[show=false]:invisible data-[show=false]:translate-x-3 data-[show=false]:opacity-0"
+        >
+          {copy.dock.open}
+        </p>
         <button
           ref={buttonRef}
           type="button"
           aria-expanded={open}
-          aria-controls={open ? panelId : undefined}
+          aria-controls={mounted ? panelId : undefined}
           aria-label={open ? copy.dock.close : copy.dock.open}
-          onClick={() => dispatch(setThemeDock(!open))}
+          onClick={() => {
+            setMounted(true)
+            setNudge(false) // they've found it; the hint has done its job
+            dispatch(setThemeDock(!open))
+          }}
           className="group/dock relative grid size-14 place-items-center rounded-full bg-[conic-gradient(from_225deg,var(--ph-black)_0_50%,var(--ph-white)_0)] shadow-[0_12px_40px_-8px_rgb(0_0_0/0.5)] ring-2 ring-fg/15 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:rotate-180 focus-visible:outline-offset-4"
         >
           <span className="grid size-8 place-items-center rounded-full bg-brand-black text-brand-yellow ring-2 ring-brand-yellow transition-transform duration-500 group-hover/dock:-rotate-180">

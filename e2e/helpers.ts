@@ -17,13 +17,36 @@ export const allPaths = [...indexablePaths, '/config']
 export async function scrollThrough(page: Page) {
   await page.evaluate(async () => {
     const step = Math.round(window.innerHeight * 0.8)
+    // 'instant' overrides the site's smooth scrolling, which would otherwise be
+    // interrupted by the next step and leave parts of the page never in view.
     for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
-      window.scrollTo(0, y)
-      await new Promise((r) => setTimeout(r, 120))
+      window.scrollTo({ top: y, behavior: 'instant' })
+      await new Promise((r) => setTimeout(r, 150))
     }
-    window.scrollTo(0, 0)
+    window.scrollTo({ top: 0, behavior: 'instant' })
   })
-  await page.waitForTimeout(900)
+  // Wait for every reveal, and any other finite animation or transition, to finish
+  // instead of guessing a delay (CI machines are slower).
+  await page.waitForFunction(
+    () =>
+      [...document.querySelectorAll<HTMLElement>('[data-reveal]')].every(
+        (el) => Number(getComputedStyle(el).opacity) >= 0.99,
+      ) &&
+      document
+        .getAnimations()
+        .every((a) => a.playState !== 'running' || a.effect?.getTiming().iterations === Infinity),
+    undefined,
+    { timeout: 10_000 },
+  )
+}
+
+/** Marks the look picker's first-visit hint as seen, so it can't fade in mid-scan. */
+export async function skipDockHint(page: Page) {
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem('ph-dock-seen', '1')
+    } catch {}
+  })
 }
 
 /** Collects console errors and uncaught exceptions for a page. */
